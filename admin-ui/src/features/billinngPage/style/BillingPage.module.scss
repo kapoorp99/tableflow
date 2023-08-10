@@ -1,0 +1,10 @@
+.wrapper {
+  & > * {
+    & > * + * {
+      margin-top: var(--m-l);
+    }
+  }
+}
+.chartContainer {
+  min-height: 600px;
+}

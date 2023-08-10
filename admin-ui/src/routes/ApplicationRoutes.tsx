@@ -5,6 +5,7 @@ import SettingsPage from "../features/settingsPage";
 import parseRoutes from "./utils/parseRoutes";
 import { RoutesType } from "./types";
 import ImporterRoutes from "./ImporterRoutes";
+import BillingPage from "../features/billinngPage";
 
 const routes: RoutesType = [
   {
@@ -15,6 +16,11 @@ const routes: RoutesType = [
     paths: "data",
     layout: Main,
     children: <Imports />,
+  },
+  {
+    paths: "billing",
+    layout: Main,
+    children: <BillingPage />,
   },
   {
     paths: "settings",
