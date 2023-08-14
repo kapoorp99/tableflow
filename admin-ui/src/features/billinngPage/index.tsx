@@ -59,6 +59,7 @@ export default function BillingPage() {
         <div className={style.chartContainer}>
         <Chart
           options={{
+            dark: true, // TODO: take this from the selected theme
             data,
             primaryAxis,
             secondaryAxes,
