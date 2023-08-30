@@ -17,6 +17,7 @@ import { Importer } from "../../api/types";
 import useGetImporters from "../../api/useGetImporters";
 import useGetOrganization from "../../api/useGetOrganization";
 import useComponentsStore from "../../stores/componentsStore";
+import renderComponents from "../../utils/renderComponents";
 import { importersTable } from "./utils/importersTable";
 import style from "./style/Importers.module.scss";
 
@@ -65,7 +66,7 @@ export default function Importers() {
   const tableData = importersTable(dataPage as any, update);
 
   const components = useComponentsStore((state) => state.components);
-  const { mainPage: MainComponents } = components;
+  const { MAIN_PAGE } = components;
 
   if (isLoading) return null;
 
@@ -117,7 +118,7 @@ export default function Importers() {
         </Modal>
       )}
 
-      {MainComponents && <MainComponents />}
+      {renderComponents(MAIN_PAGE)}
     </div>
   );
 }

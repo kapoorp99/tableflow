@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Button, Icon, Tabs, useTabs, useThemeStore } from "@tableflow/ui-library";
 import { defaultAppHost, getImporterURL } from "../../api/api";
+import { Component } from "../../settings/types";
+import useComponentsStore from "../../stores/componentsStore";
 import notification from "../../utils/notification";
 import { ImporterViewProps } from "./types";
 import style from "./style/Importer.module.scss";
@@ -9,14 +11,28 @@ import Code from "../code";
 import Settings from "../settings";
 import Templates from "../templates";
 
+const componentsToTabs = (components: Component[]) => components?.reduce((a, t) => ({ ...a, ...{ [t.key || ""]: t?.label || null } }), {});
+
 export default function ImporterPage({ importer }: ImporterViewProps) {
   const importerId = importer.id;
   const { importerTab } = useParams();
   const templateCount = importer?.template?.template_columns?.length;
+
+  const components = useComponentsStore((state) => state.components);
+  const { IMPORTER_TABS } = components;
+
+  const getTabComponent = (key: string) => IMPORTER_TABS.find((t) => t?.key === key)?.component({ importer });
+
   const tabs = useTabs(
-    { template: <>Template {!!templateCount && <small className={style.miniBadge}>{templateCount}</small>}</>, code: "Code", settings: "Settings" },
+    {
+      template: <>Template {!!templateCount && <small className={style.miniBadge}>{templateCount}</small>}</>,
+      code: "Code",
+      ...(IMPORTER_TABS ? componentsToTabs(IMPORTER_TABS) : {}),
+      settings: "Settings",
+    },
     importerTab || "template"
   );
+
   const navigate = useNavigate();
   const copyToClipboard = (text: string) => {
     // TODO: This won't work on non-secure origins (besides localhost), update to use a different method
@@ -24,6 +40,7 @@ export default function ImporterPage({ importer }: ImporterViewProps) {
     navigator.clipboard.writeText(text);
     notification({ type: "success", message: "Copied to clipboard" });
   };
+
   const { tab } = tabs;
   const theme = useThemeStore((state) => state.theme);
 
@@ -81,6 +98,8 @@ export default function ImporterPage({ importer }: ImporterViewProps) {
               <Code importerId={importerId} theme={theme} hostUrl={importerCodeURL} />
             ) : tab === "settings" ? (
               <Settings importer={importer} />
+            ) : IMPORTER_TABS ? (
+              getTabComponent(tab)
             ) : null}
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Components } from "./types";
-import components from "./components";
+import components from "../settings/components";
+import { Components } from "../settings/types";
 
 type ComponentsStore = {
   components: Components;
